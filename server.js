@@ -6,52 +6,52 @@ const db = require("./db")              //importando o arquivo db
 
 server.use(express.static('public'));   //configurando para que o servidor enxergue os arquivos estáticos
 
-server.use(express.urlencoded({extended: true}))    //habilitando o método req.body
+server.use(express.urlencoded({ extended: true }))    //habilitando o método req.body
 
 nunjucks.configure('views', {           //configurando o nunjucks
     express: server,
     noCache: true,
 })
 
-server.get("/", function(req, res){                     //criando a rota de acesso para o index
+server.get("/", function (req, res) {                     //criando a rota de acesso para o index
 
-    db.all(`SELECT * FROM ideas`, function(err, rows){
-        if (err){
+    db.all(`SELECT * FROM ideas`, function (err, rows) {
+        if (err) {
             console.log(err)
             return res.send("Erro no banco de dados");
         }
-    
+
         const reversedIdeas = [...rows].reverse()       //colocando todo o conteudo das Rows que estão no banco nessa nova variavel
-                                                        //invertendo a ordem dos itens do array
+        //invertendo a ordem dos itens do array
         let lastIdeas = []
-        for(let ideia of reversedIdeas){     
-            if(lastIdeas.length < 3){
+        for (let ideia of reversedIdeas) {
+            if (lastIdeas.length < 3) {
                 lastIdeas.push(ideia)
             }
-        }    
+        }
 
-        return res.render('index.html', {ideias: lastIdeas})        //__dirname é o caminho do documento
+        return res.render('index.html', { ideias: lastIdeas })        //__dirname é o caminho do documento
     })
 
 })
 
-server.get("/ideias", function(req, res){    
+server.get("/ideias", function (req, res) {
 
-    db.all(`SELECT * FROM ideas`, function(err, rows){
-        if (err){
+    db.all(`SELECT * FROM ideas`, function (err, rows) {
+        if (err) {
             console.log(err)
             return res.send("Erro no banco de dados");
         }
 
-        const reversedIdeas = [...rows].reverse()    
+        const reversedIdeas = [...rows].reverse()
 
-        return res.render('ideias.html', {ideias: reversedIdeas})   //render é usado para carregar a pagina
+        return res.render('ideias.html', { ideias: reversedIdeas })   //render é usado para carregar a pagina
 
     });
 
 })
 
-server.post("/", function(req, res){
+server.post("/", function (req, res) {
     //inserindo dados
 
     const query = `
@@ -71,8 +71,8 @@ server.post("/", function(req, res){
         req.body.link,
     ]
 
-    db.run(query, values, function(err){
-        if (err){
+    db.run(query, values, function (err) {
+        if (err) {
             console.log(err)
             return res.send("Erro no banco de dados");
         }
